@@ -110,6 +110,10 @@ Pipfile.lock
 # mypy
 .mypy_cache/
 
+# vim
+*.swp
+*.un~
+
 
 ###
 ### Visual Studio Code
