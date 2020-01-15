@@ -729,6 +729,14 @@ class ProtocolGroup(ArgumentGroup):
             help="Store tags for exchange protocols (credential and presentation)\
             using unencrypted rather than encrypted tags",
         )
+        parser.add_argument(
+            "--did-resolution-service",
+            type=str,
+            metavar="<did-resolution-service>",
+            default="https://uniresolver.io/1.0/identifiers/$did",
+            help="Service URL to resolve DIDs, example: \
+            https://uniresolver.io/1.0/identifiers/$did",
+        )
 
     def get_settings(self, args: Namespace) -> dict:
         """Get protocol settings."""
@@ -806,6 +814,8 @@ class StartupGroup(ArgumentGroup):
         settings = {}
         if args.auto_provision:
             settings["auto_provision"] = True
+        if args.did_resolution_service:
+            settings["did_resolution_service"] = args.did_resolution_service
         return settings
 
 
