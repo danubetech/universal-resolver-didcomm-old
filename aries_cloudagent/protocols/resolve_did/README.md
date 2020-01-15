@@ -3,7 +3,6 @@ https://github.com/hyperledger/aries-rfcs/tree/master/features/0124-did-resoluti
 
 Missing:
 - use aries-cloudagent to resolve :sov DIDs
-- make uniresolver configurable to point to other services, too
 - adding additional features/options as described in the RFC
 - better inline documentation
 - cleanup clode
