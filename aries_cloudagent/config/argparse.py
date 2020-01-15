@@ -534,6 +534,14 @@ class ProtocolGroup(ArgumentGroup):
             metavar="<log-path>",
             help="Write timing information to a given log file.",
         )
+        parser.add_argument(
+            "--did-resolution-service",
+            type=str,
+            metavar="<did-resolution-service>",
+            default="https://uniresolver.io/1.0/identifiers/$did",
+            help="Service URL to resolve DIDs, example: \
+            https://uniresolver.io/1.0/identifiers/$did",
+        )
 
     def get_settings(self, args: Namespace) -> dict:
         """Get protocol settings."""
@@ -550,6 +558,9 @@ class ProtocolGroup(ArgumentGroup):
             settings["timing.enabled"] = True
         if args.timing_log:
             settings["timing.log_file"] = args.timing_log
+        if args.did_resolution_service:
+            settings["did_resolution_service"] = args.did_resolution_service
+
         return settings
 
 

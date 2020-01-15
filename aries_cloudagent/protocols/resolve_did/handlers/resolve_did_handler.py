@@ -1,6 +1,7 @@
 """Resolve DID message handler."""
 
 import requests
+from string import Template
 
 from ....messaging.base_handler import (
     BaseHandler,
@@ -40,8 +41,9 @@ class ResolveDidHandler(BaseHandler):
             },
         )
 
+        resolver_url = context.settings.get("did_resolution_service")
         try:
-            did_document = resolve_did(context.message.did)
+            did_document = resolve_did(context.message.did, resolver_url)
         except Exception as err:
             raise HandlerException(str(err))
         else:
@@ -52,9 +54,13 @@ class ResolveDidHandler(BaseHandler):
             await responder.send_reply(reply_msg)
 
 
-def resolve_did(did):
-    """Resolve a DID using the uniresolver."""
-    url = f"https://uniresolver.io/1.0/identifiers/{did}"
+def resolve_did(did, resolver_url):
+    """Resolve a DID using the uniresolver.
+
+    resolver_url has to contain a $did part for the actual DID.
+    """
+    template = Template(resolver_url)
+    url = template.substitute(did=did)
     response = requests.get(url)
     if response.ok:
         content = response.json()
