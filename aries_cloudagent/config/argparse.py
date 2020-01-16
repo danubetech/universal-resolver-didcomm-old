@@ -6,6 +6,7 @@ from os import environ
 from configargparse import ArgumentParser, Namespace, YAMLConfigFileParser
 from typing import Type
 
+from .base import ConfigError
 from .error import ArgsParseError
 from .util import ByteSize
 from ..utils.tracing import trace_event
@@ -733,9 +734,9 @@ class ProtocolGroup(ArgumentGroup):
             "--did-resolution-service",
             type=str,
             metavar="<did-resolution-service>",
-            default="https://uniresolver.io/1.0/identifiers/$did",
+            default="https://uniresolver.io/1.0/identifiers/{did}",
             help="Service URL to resolve DIDs, example: \
-            https://uniresolver.io/1.0/identifiers/$did",
+            https://uniresolver.io/1.0/identifiers/{did}",
         )
 
     def get_settings(self, args: Namespace) -> dict:
@@ -815,6 +816,9 @@ class StartupGroup(ArgumentGroup):
         if args.auto_provision:
             settings["auto_provision"] = True
         if args.did_resolution_service:
+            if "{did}" not in args.did_resolution_service:
+                raise ConfigError("did_resolution_service must contain a "
+                                  "'{did}' field")
             settings["did_resolution_service"] = args.did_resolution_service
         return settings
 
