@@ -5,5 +5,5 @@ Missing:
 - use aries-cloudagent to resolve :sov DIDs
 - adding additional features/options as described in the RFC
 - better inline documentation
-- cleanup clode
+- cleanup clode, error handling, robustness
 - add tests

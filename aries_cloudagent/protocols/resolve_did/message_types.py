@@ -1,4 +1,4 @@
-"""Message type identifiers for Connections."""
+"""Message types for DID resolution."""
 
 PROTOCOL_URI = "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/did_resolution/0.1"
 
