@@ -6,6 +6,7 @@ import os
 from argparse import ArgumentParser, Namespace
 from typing import Type
 
+from .base import ConfigError
 from .error import ArgsParseError
 from .util import ByteSize
 
@@ -538,9 +539,9 @@ class ProtocolGroup(ArgumentGroup):
             "--did-resolution-service",
             type=str,
             metavar="<did-resolution-service>",
-            default="https://uniresolver.io/1.0/identifiers/$did",
+            default="https://uniresolver.io/1.0/identifiers/{did}",
             help="Service URL to resolve DIDs, example: \
-            https://uniresolver.io/1.0/identifiers/$did",
+            https://uniresolver.io/1.0/identifiers/{did}",
         )
 
     def get_settings(self, args: Namespace) -> dict:
@@ -559,6 +560,9 @@ class ProtocolGroup(ArgumentGroup):
         if args.timing_log:
             settings["timing.log_file"] = args.timing_log
         if args.did_resolution_service:
+            if "{did}" not in args.did_resolution_service:
+                raise ConfigError("did_resolution_service must contain a "
+                                  "'{did}' field")
             settings["did_resolution_service"] = args.did_resolution_service
 
         return settings

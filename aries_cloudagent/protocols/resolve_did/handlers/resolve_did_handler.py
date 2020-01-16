@@ -1,7 +1,6 @@
 """Resolve DID message handler."""
 
 import requests
-from string import Template
 
 from ....messaging.base_handler import (
     BaseHandler,
@@ -30,22 +29,14 @@ class ResolveDidHandler(BaseHandler):
 
         self._logger.info("Received resolve did: %s", context.message.did)
 
-        # TODO: do I have to call a webhook here? Doesn't make much sense
-        await responder.send_webhook(
-            "resolve_did",
-            {
-                "connection_id": context.connection_record.connection_id,
-                "message_id": context.message._id,
-                "did": context.message.did,
-                "state": "received",
-            },
-        )
-
         resolver_url = context.settings.get("did_resolution_service")
         try:
             did_document = resolve_did(context.message.did, resolver_url)
         except Exception as err:
-            raise HandlerException(str(err))
+            self._logger.error(str(err))
+            msg = (f"Could not resolve DID {context.message.did} using service"
+                   f" {resolver_url}")
+            raise HandlerException(msg)
         else:
             reply_msg = ResolveDidResult(did_document=did_document)
             reply_msg.assign_thread_from(context.message)
@@ -57,12 +48,11 @@ class ResolveDidHandler(BaseHandler):
 def resolve_did(did, resolver_url):
     """Resolve a DID using the uniresolver.
 
-    resolver_url has to contain a $did part for the actual DID.
+    resolver_url has to contain a {did} field.
     """
-    template = Template(resolver_url)
-    url = template.substitute(did=did)
+    url = resolver_url.format(did=did)
     response = requests.get(url)
     if response.ok:
         content = response.json()
         return content['didDocument']
-    raise HandlerException(f"Failed to resolve DID using URL {url}")
+    raise HandlerException(f"Failed to resolve DID {did} using URL {url}")
