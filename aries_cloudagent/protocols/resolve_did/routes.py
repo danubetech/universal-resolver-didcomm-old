@@ -1,4 +1,4 @@
-"""Basic message admin routes."""
+"""DID resolution routes."""
 
 from aiohttp import web
 from aiohttp_apispec import docs, request_schema
@@ -12,7 +12,7 @@ from .messages.resolve_did import ResolveDid
 
 
 class ResolveDidSchema(Schema):
-    """Request schema for sending a message."""
+    """Request schema for resolving a DID."""
 
     did = fields.Str(description="DID",
                      example="did:sov:WRfXPg8dantKVubE3HX8pw")
@@ -22,8 +22,7 @@ class ResolveDidSchema(Schema):
 @request_schema(ResolveDidSchema())
 async def connections_resolve_did(request: web.BaseRequest):
     """
-    Request handler to resolve a DID using a local or remote service like the
-    uniresolver
+    Request handler to resolve a DID using a local or remote resolving service.
 
     Args:
         request: aiohttp request object
@@ -43,8 +42,6 @@ async def connections_resolve_did(request: web.BaseRequest):
         msg = ResolveDid(did=params["did"])
         await outbound_handler(msg, connection_id=connection_id)
 
-    # returning the actual response is thought to be done using webhooks, see
-    # https://github.com/hyperledger/aries-cloudagent-python/blob/master/docs/deploymentModel.md
     return web.json_response({})
 
 
