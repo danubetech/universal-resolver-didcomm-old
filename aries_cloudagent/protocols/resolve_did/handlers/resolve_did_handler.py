@@ -14,7 +14,7 @@ from ..messages.resolve_did_result import ResolveDidResult
 
 
 class ResolveDidHandler(BaseHandler):
-    """Message handler class for resolve did messages."""
+    """Message handler class for resolving did messages."""
 
     async def handle(self, context: RequestContext, responder: BaseResponder):
         """

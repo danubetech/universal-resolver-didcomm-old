@@ -38,6 +38,7 @@ class ResolveDidResult(AgentMessage):
         **kwargs,
     ):
         """
+        TODO: update doc
         Initialize basic message object.
 
         Args:
