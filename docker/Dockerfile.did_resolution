@@ -1,0 +1,25 @@
+FROM bcgovimages/von-image:py36-1.11-1
+
+ENV ENABLE_PTVSD 0
+
+ADD requirements*.txt ./
+
+RUN pip3 install --no-cache-dir -r requirements.txt -r requirements.dev.txt
+RUN pip3 install requests
+
+ADD aries_cloudagent ./aries_cloudagent
+ADD bin ./bin
+ADD README.md ./
+ADD setup.py ./
+
+RUN pip3 install --no-cache-dir -e .
+
+RUN mkdir logs && chown -R indy:indy logs && chmod -R ug+rw logs
+
+ENTRYPOINT ["/bin/bash", "-c", "aca-py start -it http 0.0.0.0 8060 -it ws 0.0.0.0 8061 -ot http -ot ws --auto-accept-invites --auto-accept-requests --endpoint https://uniresolver.io:8060 --endpoint wss://uniresolver.io:8061 --auto-respond-messages --label did-resolution --auto-ping-connection"]
+
+# insecure, with admin interface enabled:
+# ENTRYPOINT ["/bin/bash", "-c", "aca-py start --admin-insecure-mode --admin 0.0.0.0 3000 -it http 0.0.0.0 3555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://0.0.0.0:3555 --auto-respond-messages --label Server --auto-ping-connection --log-level debug"]
+
+# default, use command-line arguments:
+# ENTRYPOINT ["/bin/bash", "-c", "aca-py \"$@\"", "--"]
