@@ -16,10 +16,10 @@ RUN pip3 install --no-cache-dir -e .
 
 RUN mkdir logs && chown -R indy:indy logs && chmod -R ug+rw logs
 
-ENTRYPOINT ["/bin/bash", "-c", "aca-py start -it http 0.0.0.0 8060 -it ws 0.0.0.0 8061 -ot http -ot ws --auto-accept-invites --auto-accept-requests --endpoint https://uniresolver.io:8060 --endpoint wss://uniresolver.io:8061 --auto-respond-messages --label did-resolution --auto-ping-connection"]
+ENV public_domain=uniresolver.io
+ENV did_resolution_service=https://uniresolver.io/1.0/identifiers/{did}
 
-# insecure, with admin interface enabled:
-# ENTRYPOINT ["/bin/bash", "-c", "aca-py start --admin-insecure-mode --admin 0.0.0.0 3000 -it http 0.0.0.0 3555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://0.0.0.0:3555 --auto-respond-messages --label Server --auto-ping-connection --log-level debug"]
 
-# default, use command-line arguments:
-# ENTRYPOINT ["/bin/bash", "-c", "aca-py \"$@\"", "--"]
+EXPOSE 8080 8081
+
+ENTRYPOINT ["/bin/bash", "-c", "aca-py start -it http 0.0.0.0 8080 -it ws 0.0.0.0 8081 -ot http -ot ws --auto-accept-invites --auto-accept-requests --endpoint https://$public_domain:8180 --endpoint wss://$public_domain:8181 --auto-respond-messages --label did-resolution --auto-ping-connection --did-resolution-service $did_resolution_service"]
