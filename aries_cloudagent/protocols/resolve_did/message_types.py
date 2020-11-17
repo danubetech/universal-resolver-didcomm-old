@@ -1,6 +1,6 @@
 """Message types for DID resolution."""
 
-PROTOCOL_URI = "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/did_resolution/0.1"
+PROTOCOL_URI = "https://didcomm.org/did_resolution/0.1"
 
 RESOLVE = f"{PROTOCOL_URI}/resolve"
 RESOLVE_RESULT = f"{PROTOCOL_URI}/resolve_result"
