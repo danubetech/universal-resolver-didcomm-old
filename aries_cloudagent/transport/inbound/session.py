@@ -182,6 +182,8 @@ class InboundSession:
         Args:
             message: The inbound message instance
         """
+        import pdb
+        # pdb.set_trace()
         receipt = message.receipt
         mode = self.reply_mode = (
             receipt.direct_response_requested and receipt.direct_response_mode

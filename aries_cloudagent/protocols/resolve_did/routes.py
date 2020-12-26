@@ -5,7 +5,7 @@ from aiohttp_apispec import docs, request_schema
 
 from marshmallow import fields, Schema
 
-from ...connections.models.connection_record import ConnectionRecord
+from ...connections.models.conn_record import ConnRecord, ConnRecordSchema
 from ...storage.error import StorageNotFoundError
 
 from .messages.resolve_did import ResolveDid
@@ -28,19 +28,22 @@ async def connections_resolve_did(request: web.BaseRequest):
         request: aiohttp request object
 
     """
-    context = request.app["request_context"]
+    context: AdminRequestContext = request["context"]
     connection_id = request.match_info["id"]
-    outbound_handler = request.app["outbound_message_router"]
+    outbound_handler = request["outbound_message_router"]
     params = await request.json()
 
     try:
-        connection = await ConnectionRecord.retrieve_by_id(context, connection_id)
+        async with context.session() as session:
+            connection = await ConnRecord.retrieve_by_id(session, connection_id)
     except StorageNotFoundError:
         raise web.HTTPNotFound()
 
-    if connection.is_ready:
-        msg = ResolveDid(did=params["did"])
-        await outbound_handler(msg, connection_id=connection_id)
+    if not connection.is_ready:
+        raise web.HTTPBadRequest(reason=f"Connection {connection_id} not ready")
+
+    msg = ResolveDid(did=params["did"])
+    await outbound_handler(msg, connection_id=connection_id)
 
     return web.json_response({})
 

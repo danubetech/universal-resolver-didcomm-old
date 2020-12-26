@@ -247,8 +247,16 @@ class Conductor:
                     invite_url = InvitationMessage.deserialize(
                         invi_rec.invitation
                     ).to_url(base_url)
+                    print("Invitation plaintext:")
+                    print(json.dumps(invi_rec.invitation))
+
                     print("Invitation URL:")
                     print(invite_url, flush=True)
+                    invitation_path = "/home/fonfon/code/danubetech/did-resolution-demo/invitation.txt"
+                    with open(invitation_path, "w") as handle:
+                        encoded_invitation = invite_url.split("?oob=")[-1]
+                        handle.write(encoded_invitation)
+                        print(f"Wrote invitation to {invitation_path}")
                     del mgr
             except Exception:
                 LOGGER.exception("Error creating invitation")

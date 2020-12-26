@@ -80,7 +80,7 @@ class WsTransport(BaseInboundTransport):
             The web response
 
         """
-
+        LOGGER.info("Websocket: start inbound message handler")
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         loop = asyncio.get_event_loop()
@@ -94,6 +94,8 @@ class WsTransport(BaseInboundTransport):
         async with session:
             inbound = loop.create_task(ws.receive())
             outbound = loop.create_task(session.wait_response())
+            import pdb
+            # pdb.set_trace()
 
             while not ws.closed:
                 await asyncio.wait(
@@ -133,6 +135,9 @@ class WsTransport(BaseInboundTransport):
 
         if not ws.closed:
             await ws.close()
-        LOGGER.info("Websocket connection closed")
+        import pdb
+        # pdb.set_trace()
+        if ws.closed:
+            LOGGER.info("Websocket connection closed")
 
         return ws
