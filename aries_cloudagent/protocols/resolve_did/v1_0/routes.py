@@ -5,7 +5,7 @@ from aiohttp_apispec import docs, request_schema
 
 from marshmallow import fields, Schema
 
-from ...connections.models.conn_record import ConnRecord, ConnRecordSchema
+from ...connections.models.conn_record import ConnRecord
 from ...storage.error import StorageNotFoundError
 
 from .messages.resolve_did import ResolveDid
