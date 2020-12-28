@@ -252,13 +252,13 @@ class Conductor:
 
                     print("Invitation URL:")
                     print(invite_url, flush=True)
-                    """
-                    invitation_path = "/home/fonfon/code/danubetech/did-resolution-demo/invitation.txt"
-                    with open(invitation_path, "w") as handle:
-                        encoded_invitation = invite_url.split("?oob=")[-1]
-                        handle.write(encoded_invitation)
-                        print(f"Wrote invitation to {invitation_path}")
-                    """
+                    write_invitation_to = \
+                        context.settings.get("write_invitation_to", None)
+                    if write_invitation_to is not None:
+                        with open(write_invitation_to, "w") as handle:
+                            encoded_invitation = invite_url.split("?oob=")[-1]
+                            handle.write(encoded_invitation)
+                            print(f"Wrote invitation to {write_invitation_to}")
                     del mgr
             except Exception:
                 LOGGER.exception("Error creating invitation")

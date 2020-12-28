@@ -738,6 +738,12 @@ class ProtocolGroup(ArgumentGroup):
             help="Service URL to resolve DIDs, example: \
             https://uniresolver.io/1.0/identifiers/{did}",
         )
+        parser.add_argument(
+            "--write-invitation-to",
+            type=str,
+            metavar="<write-invitation-to>",
+            help="Write the startup invitation to a file with the given path",
+        )
 
     def get_settings(self, args: Namespace) -> dict:
         """Get protocol settings."""
@@ -750,6 +756,8 @@ class ProtocolGroup(ArgumentGroup):
             settings["debug.monitor_ping"] = args.monitor_ping
         if args.public_invites:
             settings["public_invites"] = True
+        if args.write_invitation_to:
+            settings["write_invitation_to"] = args.write_invitation_to
         if args.timing:
             settings["timing.enabled"] = True
         if args.timing_log:
