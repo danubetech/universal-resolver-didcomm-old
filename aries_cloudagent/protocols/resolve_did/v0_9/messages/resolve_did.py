@@ -5,9 +5,9 @@ from typing import Union
 
 from marshmallow import fields
 
-from ....messaging.agent_message import AgentMessage, AgentMessageSchema
-from ....messaging.util import datetime_now, datetime_to_str
-from ....messaging.valid import INDY_ISO8601_DATETIME
+from .....messaging.agent_message import AgentMessage, AgentMessageSchema
+from .....messaging.util import datetime_now, datetime_to_str
+from .....messaging.valid import INDY_ISO8601_DATETIME
 
 from ..message_types import RESOLVE, PROTOCOL_PACKAGE
 

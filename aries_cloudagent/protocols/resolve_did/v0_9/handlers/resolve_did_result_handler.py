@@ -2,7 +2,7 @@
 
 import json
 
-from ....messaging.base_handler import BaseHandler, BaseResponder, RequestContext
+from .....messaging.base_handler import BaseHandler, BaseResponder, RequestContext
 
 from ..messages.resolve_did_result import ResolveDidResult
 
