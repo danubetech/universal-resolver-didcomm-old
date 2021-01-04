@@ -10,4 +10,5 @@ services:
       did_resolution_service: ${uniresolver_didcomm_did_resolution_service}
     ports:
       - "8180:8080"
-      - "8181:8081"
+    # TODO: probably only needed when running server+client on the same host
+    network_mode: "host"

@@ -21,10 +21,10 @@ RUN pip3 install --no-cache-dir -e .
 
 RUN mkdir logs && chown -R indy:indy logs && chmod -R ug+rw logs
 
-ENV public_domain=uniresolver.io
+ENV public_domain=localhost
 ENV did_resolution_service=https://uniresolver.io/1.0/identifiers/{did}
 
 
-EXPOSE 8080 8081
+EXPOSE 8080
 
-ENTRYPOINT ["/bin/bash", "-c", "aca-py start -it http 0.0.0.0 8080 -it ws 0.0.0.0 8081 -ot http -ot ws --auto-accept-invites --auto-accept-requests --endpoint https://$public_domain:8180 --endpoint wss://$public_domain:8181 --auto-respond-messages --label did-resolution --did-resolution-service $did_resolution_service --public-invite --invite --invite-base-url https://didcomm.uniresolver.io:3555 --invite-multi-use --no-ledger"]
+ENTRYPOINT ["/bin/bash", "-c", "aca-py start -it http 0.0.0.0 8080 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://$public_domain:8080 --auto-respond-messages --label did-resolution --did-resolution-service $did_resolution_service --public-invite --invite --invite-base-url http://localhost:8080 --invite-multi-use --no-ledger"]
