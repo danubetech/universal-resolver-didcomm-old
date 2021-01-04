@@ -11,6 +11,7 @@ wallet.
 import hashlib
 import json
 import logging
+import os
 
 from ..admin.base_server import BaseAdminServer
 from ..admin.server import AdminResponder, AdminServer
@@ -285,10 +286,11 @@ class Conductor:
                     write_invitation_to = \
                         context.settings.get("write_invitation_to", None)
                     if write_invitation_to is not None:
-                        with open(write_invitation_to, "w") as handle:
+                        expanded_path = os.path.expanduser(write_invitation_to)
+                        with open(expanded_path, "w") as handle:
                             encoded_invitation = invite_url.split("?oob=")[-1]
                             handle.write(encoded_invitation)
-                            print(f"Wrote invitation to {write_invitation_to}")
+                            print(f"Wrote invitation to {expanded_path}")
                     del mgr
             except Exception:
                 LOGGER.exception("Error creating invitation")
