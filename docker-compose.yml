@@ -3,11 +3,12 @@ networks:
   default:
     name: universal-resolver
 services:
-  didcomm-interface:
-    image: universalresolver/didcomm:latest
+  universal-resolver-didcomm:
+    image: universalresolver/universal-resolver-didcomm:latest
     environment:
-      public_domain: ${uniresolver_didcomm_public_domain}
+      public_endpoint_http: ${uniresolver_didcomm_public_endpoint_http}
+      public_endpoint_ws: ${uniresolver_didcomm_public_endpoint_ws}
       did_resolution_service: ${uniresolver_didcomm_did_resolution_service}
     ports:
-      - "8180:8080"
-      - "8181:8081"
+      - "8180:8180"
+      - "8181:8181"
