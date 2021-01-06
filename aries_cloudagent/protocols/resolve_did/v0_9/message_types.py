@@ -8,7 +8,7 @@ SPEC_URI = (
     "0124-did-resolution-protocol"
 )
 
-PROTOCOL_URI = "did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/did_resolution/0.9"
+PROTOCOL_URI = "https://didcomm.org/did_resolution/0.1"
 
 RESOLVE = f"{PROTOCOL_URI}/resolve"
 RESOLVE_RESULT = f"{PROTOCOL_URI}/resolve_result"
