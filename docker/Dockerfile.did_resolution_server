@@ -21,9 +21,9 @@ RUN pip3 install --no-cache-dir -e .
 
 RUN mkdir logs && chown -R indy:indy logs && chmod -R ug+rw logs
 
-ENV public_endpoint_http=https://uniresolver.io:8180
-ENV public_endpoint_ws=wss://uniresolver.io:8181
-ENV did_resolution_service=https://uniresolver.io/1.0/identifiers/{did}
+ENV public_endpoint_http=http://dev.uniresolver.io:8180
+ENV public_endpoint_ws=ws://dev.uniresolver.io:8181
+ENV did_resolution_service=https://dev.uniresolver.io/1.0/identifiers/{did}
 
 
 EXPOSE 8180 8181
