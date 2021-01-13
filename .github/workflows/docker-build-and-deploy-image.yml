@@ -12,7 +12,7 @@ on:
       - 'requirements**'
       - 'docs'
       - 'scripts'
-    branches: [gh-workflows]
+    branches: [main]
   workflow_dispatch:
 
 env:
