@@ -9,7 +9,7 @@ before_script:
 build-master:
   stage: build
   script:
-    - docker build -f ./docker/Dockerfile.did_resolution --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker build -f ./docker/did_resolution_server.Dockerfile --pull -t "$CI_REGISTRY_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE"
   only:
     - master
@@ -17,7 +17,7 @@ build-master:
 build:
   stage: build
   script:
-    - docker build -f ./docker/Dockerfile.did_resolution --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker build -f ./docker/did_resolution_server.Dockerfile --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   except:
     - master

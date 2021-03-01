@@ -3,7 +3,7 @@
 cd "$(dirname "$0")" || exit
 CONTAINER_RUNTIME="${CONTAINER_RUNTIME:-docker}"
 
-$CONTAINER_RUNTIME build -t aries-cloudagent-test -f ../docker/Dockerfile.test-indy .. || exit 1
+$CONTAINER_RUNTIME build -t aries-cloudagent-test -f ../docker/test-indy.Dockerfile .. || exit 1
 
 if [ ! -d ../test-reports ]; then mkdir ../test-reports; fi
 

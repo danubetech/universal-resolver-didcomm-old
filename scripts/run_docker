@@ -3,7 +3,7 @@
 cd "$(dirname "$0")" || exit 1
 CONTAINER_RUNTIME="${CONTAINER_RUNTIME:-docker}"
 
-$CONTAINER_RUNTIME build -t aries-cloudagent-run -f ../docker/Dockerfile.run .. || exit 1
+$CONTAINER_RUNTIME build -t aries-cloudagent-run -f ../docker/run.Dockerfile .. || exit 1
 
 ARGS=""
 for PORT in $PORTS; do

@@ -90,7 +90,7 @@ function buildACAPyDockerImage() {
   local tag="${2}"
 
   cd ${srcDir}/scripts
-  docker build -t ${tag} -f ../docker/Dockerfile.run .. || exit 1
+  docker build -t ${tag} -f ../docker/run.Dockerfile .. || exit 1
 }
 
 # Start an ACA-py docker image
