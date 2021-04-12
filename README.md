@@ -1,102 +1,92 @@
-# Hyperledger Aries Cloud Agent - Python  <!-- omit in toc -->
+# Purpose
 
-[![pypi releases](https://img.shields.io/pypi/v/aries_cloudagent)](https://pypi.org/project/aries-cloudagent/)
-[![CircleCI](https://circleci.com/gh/hyperledger/aries-cloudagent-python.svg?style=shield)](https://circleci.com/gh/hyperledger/aries-cloudagent-python)
-[![codecov](https://codecov.io/gh/hyperledger/aries-cloudagent-python/branch/master/graph/badge.svg)](https://codecov.io/gh/hyperledger/aries-cloudagent-python)
+This is the Universal Resolver DIDComm agent interface, based on ACA-Py (see https://github.com/hyperledger/aries-cloudagent-python/).
 
-<!-- ![logo](/docs/assets/aries-cloudagent-python-logo-bw.png) -->
+The test script will invoke a DIDComm agent, which will in turn open a connection to a Universal Resolver DIDComm agent for a DID resolution request.
 
-> An easy to use Aries agent for building SSI services using any language that supports sending/receiving HTTP requests.
+# Components
 
-Hyperledger Aries Cloud Agent Python (ACA-Py) is a foundation for building self-sovereign identity (SSI) / decentralized identity services running in non-mobile environments using DIDcomm messaging, the did:peer DID method, and verifiable credentials. With ACA-Py, SSI developers can focus on building services using familiar web development technologies instead of trying to learn the nuts and bolts of low-level SDKs.
+The components marked in red are provided by this repository.
 
-As we create ACA-Py, we're also building resources so that developers with a wide-range of backgrounds can get productive with ACA-Py in a hurry. Checkout the [resources](#resources) section below and jump in.
+![architecture-agents](https://raw.githubusercontent.com/danubetech/universal-resolver-didcomm/main/diagrams/architecture-agents.png)
 
-The "cloud" in Aries Cloud Agent - Python does **NOT** mean that ACA-Py cannot be used as an edge agent. ACA-Py is suitable for use in any non-mobile agent scenario, including as an enterprise edge agent for
-issuing, verifying and holding verifiable credentials.
+# Building
 
-## Table of Contents <!-- omit in toc -->
+For a basic (insecure) demo on localhost:
 
-- [Background](#background)
-- [Install](#install)
-- [Usage](#usage)
-- [Security](#security)
-- [API](#api)
-- [Resources](#resources)
-  - [Quickstart](#quickstart)
-  - [Architectural Deep Dive](#architectural-deep-dive)
-  - [Getting Started Guide](#getting-started-guide)
-  - [Read the Docs](#read-the-docs)
-  - [What to Focus On?](#what-to-focus-on)
-- [Credit](#credit)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Background
-
-Developing an ACA-Py-based application is pretty straight forward for those familiar with web development. An ACA-Py instance is always deployed with a paired "controller" application that provides the business logic for that ACA-Py agent. The controller receives webhook event notifications from its instance of ACA-Py and uses an HTTP API exposed by the ACA-Py instance to provide direction on how to respond to those events. No ACA-Py/Python development is needed--just deploy an ACA-Py instance from PyPi (examples available). The source of the business logic is your imagination. An interface to a legacy system? A user interface for a person? Custom code to implement a new service? You can build your controller in any language that supports making and receiving HTTP requests. Wait...that's every language!
-
-ACA-Py currently supports "only" Hyperledger Indy's verifiable credentials scheme (which is pretty powerful). We are experimenting with adding support to ACA-Py for other DID Ledgers and verifiable credential schemes.
-
-ACA-Py is built on the Aries concepts and features defined in the [Aries RFC](https://github.com/hyperledger/aries-rfcs) repository. [This document](https://github.com/hyperledger/aries-cloudagent-python/blob/master/SupportedRFCs.md) contains a (reasonably up to date) list of supported Aries RFCs by the current ACA-Py implementation.
-
-## Install
-
-ACA-Py can be run with docker without installation, or can be installed [from PyPi](https://pypi.org/project/aries-cloudagent/). Use the following command to install it locally:
-
-```bash
-pip install aries-cloudagent
+```
+# install (debian) packages, pip and virtualenv:
+sudo apt install python3-virtualenv python3-pip
+# or alternatively: pip install virtualenv
+# install aries-cloudagent including the did resolution protocol
+mkdir venv
+virtualenv -p python3 venv/
+source venv/bin/activate
+pip install -r requirements.txt
+git clone git@github.com:danubetech/universal-resolver-didcomm.git
+cd universal-resolver-didcomm
+git checkout main
+pip install --no-cache-dir -e .
+pip install python3-indy
 ```
 
-## Usage
+When using Docker, first build the Docker image as follows:
 
-Instructions for running ACA-Py can be [found here](https://github.com/hyperledger/aries-cloudagent-python/blob/master/DevReadMe.md#running).
+`docker build . -f docker/did_resolution_demo.Dockerfile -t universalresolver/universal-resolver-didcomm-demo:latest`
 
-## Security
+# Starting a Universal Resolver DIDComm agent
 
-The administrative API exposed by the agent for the controller to use must be protected with an API key
-(using the `--admin-api-key` command line arg) or deliberately left unsecured using the
-`--admin-insecure-mode` command line arg. The latter should not be used other than in development if the API
-is not otherwise secured.
+```
+aca-py start -it http 127.0.0.1 3555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:3555 --auto-respond-messages --label Server --log-level debug --public-invite --invite --invite-base-url http://localhost:3555 --invite-multi-use --no-ledger --admin-insecure-mode --admin 127.0.0.1 3000 --write-invitation-to=~/didcomm-invitation.txt --emit-new-didcomm-prefix
+```
 
-## API
+Or via Docker:
 
-A deployed instance of an ACA-Py agent assembles an OpenAPI-documented REST interface from the protocols loaded with the agent. This is used by a controller application (written in any language) to manage the behaviour of the agent. The controller can initiate agent actions such as issuing a credential, and can respond to agent events, such
-as sending a presentation request after a new pairwise DID Exchange connection has been accepted. Agent events are delivered to the controller as webhooks to a configured URL. More information on the administration API and webhooks can be found [here](https://github.com/hyperledger/aries-cloudagent-python/blob/master/AdminAPI.md).
+```
+# docker server (image built with aries-cloudagent-container), listening on and mapping port 3555:
+docker run --net=host -p 3000:3000 -p 3555:3555 -i -t universalresolver/universal-resolver-didcomm-demo:latest start --admin-insecure-mode --admin 0.0.0.0 3000 -it http 0.0.0.0 3555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:3555 --auto-respond-messages --label Server --log-level debug  --public-invite --invite --invite-base-url http://localhost:8080 --no-ledger --emit-new-didcomm-prefix
+```
 
-## Resources
+# Starting a client DIDComm agent
 
-### Quickstart
+```
+aca-py start --admin-insecure-mode --admin 127.0.0.1 4000 -it http 127.0.0.1 4555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:4555 --auto-store-credential --auto-respond-messages --label Client --auto-ping-connection --log-level debug --no-ledger --emit-new-didcomm-prefix
+```
 
-If you are an experienced decentralized identity developer that knows Indy, are already familiar with the concepts behind Aries,  want to play with the code, and perhaps even start contributing to the project, an "install and go" page for developers can be found [here](https://github.com/hyperledger/aries-cloudagent-python/blob/master/DevReadMe.md).
+Or via Docker:
 
-### Architectural Deep Dive
+```
+docker run --net=host -p 4000:4000 -p 4555:4555 -i -t universalresolver/universal-resolver-didcomm-demo:latest start --admin-insecure-mode --admin 0.0.0.0 4000 -it http 0.0.0.0 4555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:4555 --auto-store-credential --auto-respond-messages --label Client --auto-ping-connection --log-level debug --no-ledger --emit-new-didcomm-prefix
+```
 
-The ACA-Py team presented an architectural deep dive webinar that can be viewed [here](https://youtu.be/FXTQEtB4fto). Slides from the webinar can be found [here](https://docs.google.com/presentation/d/1K7qiQkVi4n-lpJ3nUZY27OniUEM0c8HAIk4imCWCx5Q/edit#slide=id.g5d43fe05cc_0_77).
+# Websocket demo
 
-### Getting Started Guide
+Starting the Universal Resolver DIDComm agent:
 
-For everyone those new to SSI, Indy and Aries, we've created a [Getting Started Guide](https://github.com/hyperledger/aries-cloudagent-python/blob/master/docs/GettingStartedAriesDev/README.md) that will take you from knowing next to nothing about decentralized identity to developing Aries-based business apps and services in a hurry. Along the way, you'll run some early Indy apps, apps built on ACA-Py and developer-oriented demos for interacting with ACA-Py. The guide has a good table of contents so that you can skip the parts you already know.
+```
+aca-py start -it ws 127.0.0.1 3555 -ot ws --auto-accept-invites --auto-accept-requests --endpoint ws://127.0.0.1:3555 --auto-respond-messages --label Server --log-level debug --public-invite --invite --invite-base-url ws://localhost:3555 --invite-multi-use --no-ledger --admin-insecure-mode --admin 127.0.0.1 3000 --write-invitation-to=/home/fonfon/code/danubetech/did-resolution-demo/invitation.txt --no-ledger --emit-new-didcomm-prefix
+```
 
-### Read the Docs
+Starting the client DIDComm agent:
 
-The ACA-Py Python docstrings are used as the source of a [Read the Docs](https://aries-cloud-agent-python.readthedocs.io/en/latest/) code overview site. Want to review the
-modules that make up ACA-Py? This is the best place to go.
+```
+aca-py start --admin-insecure-mode --admin 127.0.0.1 4000 -it ws 127.0.0.1 4555 -ot ws --auto-accept-invites --auto-accept-requests --endpoint ws://127.0.0.1:4555 --auto-store-credential --auto-respond-messages --label Client --auto-ping-connection --log-level debug --no-ledger --emit-new-didcomm-prefix
+```
 
-### What to Focus On?
+# Websocket demo with hard-coded seed / invitation
 
-Not sure where your focus should be? Building apps? Aries? Indy? Indy's Blockchain? Ursa? Here is a [document](https://github.com/hyperledger/aries-cloudagent-python/blob/master/docs/GettingStartedAriesDev/IndyAriesDevOptions.md) that goes through the technical stack to show how the projects fit together, so you can decide where you want to focus your efforts.
+Not yet working; start server without --invite-multi-use but with --invite-public:
 
-## Credit
+Starting the Universal Resolver DIDComm agent:
 
-The initial implementation of ACA-Py was developed by the Verifiable Organizations Network (VON) team based at the Province of British Columbia. To learn more about VON and what's happening with decentralized identity in British Columbia, please go to [https://vonx.io](https://vonx.io).
+```
+aca-py start -it ws 127.0.0.1 3555 -ot ws --auto-accept-invites --auto-accept-requests --endpoint ws://127.0.0.1:3555 --auto-respond-messages --label Server --log-level debug --public-invite --invite --public-invites --invite-public --invite-base-url ws://localhost:3555 --seed 12345678912345678912345678912345 --emit-new-didcomm-prefix
+```
 
-## Contributing
+Starting the client DIDComm agent:
 
-Pull requests are welcome! Please read our [contributions guide](https://github.com/hyperledger/aries-cloudagent-python/blob/master/CONTRIBUTING.md) and submit your PRs. We enforce [developer certificate of origin](https://developercertificate.org/) (DCO) commit signing. See guidance [here](https://github.com/apps/dco).
+```
+aca-py start --admin-insecure-mode --admin 127.0.0.1 4000 -it ws 127.0.0.1 4555 -ot ws --auto-accept-invites --auto-accept-requests --endpoint ws://127.0.0.1:4555 --auto-store-credential --auto-respond-messages --label Client --auto-ping-connection --log-level debug --emit-new-didcomm-prefix
+```
 
-We also welcome issues submitted about problems you encounter in using ACA-Py.
-
-## License
-
-[Apache License Version 2.0](https://github.com/hyperledger/aries-cloudagent-python/blob/master/LICENSE)
+instead, write to 'invitation.txt' for now.
