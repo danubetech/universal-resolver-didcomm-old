@@ -34,7 +34,7 @@ Building a Docker image:
 
 `docker build . -f docker/did_resolution_demo.Dockerfile -t universalresolver/universal-resolver-didcomm-demo:latest`
 
-# Starting a Universal Resolver DIDComm agent
+# Starting the Universal Resolver DIDComm agent
 
 Locally using Python:
 
@@ -45,11 +45,10 @@ aca-py start -it http 127.0.0.1 3555 -ot http --auto-accept-invites --auto-accep
 Using Docker:
 
 ```
-# docker server (image built with aries-cloudagent-container), listening on and mapping port 3555:
 docker run --net=host -p 3000:3000 -p 3555:3555 -i -t universalresolver/universal-resolver-didcomm-demo:latest start --admin-insecure-mode --admin 0.0.0.0 3000 -it http 0.0.0.0 3555 -ot http --auto-accept-invites --auto-accept-requests --endpoint http://127.0.0.1:3555 --auto-respond-messages --label Server --log-level debug  --public-invite --invite --invite-base-url http://localhost:8080 --no-ledger --emit-new-didcomm-prefix
 ```
 
-# Starting a client DIDComm agent
+# Starting the client DIDComm agent
 
 Locally using Python:
 
