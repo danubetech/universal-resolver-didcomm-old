@@ -1,10 +1,12 @@
-# Purpose
-
 This is the Universal Resolver DIDComm agent interface, based on ACA-Py (see https://github.com/hyperledger/aries-cloudagent-python/).
 
-# Components
+# Overview
 
-The DIDComm agent in this repository can be used both as a Universal Resolver DIDComm agent, and as a client DIDComm agent that connects to it and sends DID resolution requests. Both agents are marked in red in the following diagram:
+The DIDComm agent in this repository can be used both as a Universal Resolver DIDComm agent, and as a client DIDComm agent that connects to it and sends DID resolution requests.
+
+The Universal Resolver DIDComm agent generates a connection invitation that can be used by client DIDComm agents.
+
+Both agents are marked in red in the following diagram:
 
 ![architecture-agents](https://raw.githubusercontent.com/danubetech/universal-resolver-didcomm/main/diagrams/architecture-agents.png)
 
