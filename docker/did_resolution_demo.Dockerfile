@@ -1,3 +1,5 @@
+# Dockerfile for universalresolver/universal-resolver-didcomm-demo
+
 FROM bcgovimages/von-image:py36-1.15-0
 
 ENV ENABLE_PTVSD 0
