@@ -88,5 +88,3 @@ Starting the client DIDComm agent:
 ```
 aca-py start --admin-insecure-mode --admin 127.0.0.1 4000 -it ws 127.0.0.1 4555 -ot ws --auto-accept-invites --auto-accept-requests --endpoint ws://127.0.0.1:4555 --auto-store-credential --auto-respond-messages --label Client --auto-ping-connection --log-level debug --emit-new-didcomm-prefix
 ```
-
-instead, write to 'invitation.txt' for now.
