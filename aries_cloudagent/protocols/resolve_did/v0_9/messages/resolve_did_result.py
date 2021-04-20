@@ -33,7 +33,7 @@ class ResolveDidResult(AgentMessage):
         self,
         *,
         sent_time: Union[str, datetime] = None,
-        did_document: str = None,
+        did_document: dict = None,
         localization: str = None,
         **kwargs,
     ):
@@ -53,8 +53,6 @@ class ResolveDidResult(AgentMessage):
         if localization:
             self._decorators["l10n"] = localization
         self.sent_time = datetime_to_str(sent_time)
-        if not isinstance(did_document, str):
-            did_document = json.dumps(did_document)
         self.did_document = did_document
 
 
@@ -72,5 +70,5 @@ class ResolveDidResultSchema(AgentMessageSchema):
         **INDY_ISO8601_DATETIME,
     )
     example = '{"@context": "https://w3id.org/did/v0.11", "id": "did:sov:xyz",}'
-    did_document = fields.Str(required=True, description="DID",
+    did_document = fields.Dict(required=True, description="DID Document",
                               example=example)
