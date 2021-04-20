@@ -64,5 +64,8 @@ class ResolveDidSchema(AgentMessageSchema):
         description="Time message was sent, ISO8601 with space date/time separator",
         **INDY_ISO8601_DATETIME,
     )
-    did = fields.Str(required=True, description="DID",
-                     example="did:sov:WRfXPg8dantKVubE3HX8pw",)
+    did = fields.Str(
+        required=True,
+        description="DID",
+        example="did:sov:WRfXPg8dantKVubE3HX8pw",
+    )

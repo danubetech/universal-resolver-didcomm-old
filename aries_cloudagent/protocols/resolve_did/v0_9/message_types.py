@@ -18,6 +18,6 @@ PROTOCOL_PACKAGE = "aries_cloudagent.protocols.resolve_did.v0_9"
 MESSAGE_TYPES = DIDCommPrefix.qualify_all(
     {
         RESOLVE: f"{PROTOCOL_PACKAGE}.messages.resolve_did.ResolveDid",
-        RESOLVE_RESULT: f"{PROTOCOL_PACKAGE}.messages.resolve_did_result.ResolveDidResult"
+        RESOLVE_RESULT: f"{PROTOCOL_PACKAGE}.messages.resolve_did_result.ResolveDidResult",
     }
 )
