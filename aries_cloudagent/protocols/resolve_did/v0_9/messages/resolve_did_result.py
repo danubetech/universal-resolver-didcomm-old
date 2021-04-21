@@ -84,7 +84,7 @@ class ResolveDidResultSchema(AgentMessageSchema):
     )
 
 
-class ResolveDIDProblemReport(AgentMessage, ProblemReport):
+class ResolveDIDProblemReport(ProblemReport):
     """Message for reporting errors from the remote resolver."""
 
     class Meta:
