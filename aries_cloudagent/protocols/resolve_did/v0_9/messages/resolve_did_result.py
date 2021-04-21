@@ -13,7 +13,7 @@ from .....messaging.agent_message import AgentMessage, AgentMessageSchema
 from .....messaging.util import datetime_now, datetime_to_str
 from .....messaging.valid import INDY_ISO8601_DATETIME
 
-from ..message_types import RESOLVE_RESULT, PROTOCOL_PACKAGE
+from ..message_types import RESOLVE_RESULT, PROTOCOL_PACKAGE, RESOLVE_PROBLEM_REPORT
 
 HANDLER_CLASS = \
     f"{PROTOCOL_PACKAGE}.handlers.resolve_did_result_handler.ResolveDidResultHandler"
@@ -91,7 +91,5 @@ class ResolveDIDProblemReport(ProblemReport):
         """Basic message metadata class."""
 
         handler_class = PROBLEM_REPORT_HANDLER_CLASS
-        message_type = RESOLVE_RESULT
+        message_type = RESOLVE_PROBLEM_REPORT
         schema_class = PROBLEM_REPORT_HANDLER_SCHEMA
-
-    protocol = "https://didcomm.org/did_resolution/0.9"
