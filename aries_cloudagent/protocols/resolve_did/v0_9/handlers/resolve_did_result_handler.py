@@ -2,6 +2,7 @@
 
 import json
 
+from .....core.error import BaseError
 from .....messaging.base_handler import BaseHandler, BaseResponder, RequestContext
 
 from ..messages.resolve_did_result import ResolveDidResult
@@ -35,3 +36,20 @@ class ResolveDidResultHandler(BaseHandler):
                 "state": "received",
             },
         )
+
+
+class ResolveDIDProblemReportHandler(BaseHandler):
+    """Handler for DID resolution problem reports."""
+
+    async def handle(self, context: RequestContext, responder: BaseResponder) -> None:
+        """Handle problem reports."""
+        report: ResolveDIDProblemReportHandler = context.message
+        self._logger.warning("Received problem report: %s", report.explain_ltxt)
+
+    def map_exception(self, message: "ResolveDIDProblemReport"):
+        """Map report message to an exception."""
+        return DIDNotFound(f"DID not found on remote resolver: {message.explain_ltxt}")
+
+
+class DIDNotFound(BaseError):
+    """Raised when DID is not found in verifiable data registry."""

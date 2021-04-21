@@ -4,19 +4,27 @@
 # https://github.com/hyperledger/aries-rfcs/tree/master/features/0124-did-resolution-protocol#resolve-message
 
 from datetime import datetime
-import json
 from typing import Union
 
 from marshmallow import fields
 
+from ....problem_report.v1_0.message import ProblemReport
 from .....messaging.agent_message import AgentMessage, AgentMessageSchema
 from .....messaging.util import datetime_now, datetime_to_str
 from .....messaging.valid import INDY_ISO8601_DATETIME
 
-from ..message_types import RESOLVE_RESULT, PROTOCOL_PACKAGE
+from ..message_types import RESOLVE_RESULT, PROTOCOL_PACKAGE, RESOLVE_PROBLEM_REPORT
 
 HANDLER_CLASS = \
     f"{PROTOCOL_PACKAGE}.handlers.resolve_did_result_handler.ResolveDidResultHandler"
+
+
+PROBLEM_REPORT_HANDLER_CLASS = \
+    f"{PROTOCOL_PACKAGE}.handlers.resolve_did_result_handler." \
+    f"ResolveDIDProblemReportHandler"
+
+PROBLEM_REPORT_HANDLER_SCHEMA =\
+    "aries_cloudagent.protocols.problem_report.v1_0.message.ProblemReportSchema"
 
 
 class ResolveDidResult(AgentMessage):
@@ -30,13 +38,14 @@ class ResolveDidResult(AgentMessage):
         schema_class = "ResolveDidResultSchema"
 
     def __init__(
-        self,
-        *,
-        sent_time: Union[str, datetime] = None,
-        did_document: dict = None,
-        localization: str = None,
-        **kwargs,
+            self,
+            *,
+            sent_time: Union[str, datetime] = None,
+            did_document: dict = None,
+            localization: str = None,
+            **kwargs,
     ):
+
         """
         TODO: update doc
         Initialize basic message object.
@@ -70,5 +79,17 @@ class ResolveDidResultSchema(AgentMessageSchema):
         **INDY_ISO8601_DATETIME,
     )
     example = '{"@context": "https://w3id.org/did/v0.11", "id": "did:sov:xyz",}'
-    did_document = fields.Dict(required=True, description="DID Document",
-                              example=example)
+    did_document = fields.Dict(
+        required=True, description="DID Document", example=example
+    )
+
+
+class ResolveDIDProblemReport(ProblemReport):
+    """Message for reporting errors from the remote resolver."""
+
+    class Meta:
+        """Basic message metadata class."""
+
+        handler_class = PROBLEM_REPORT_HANDLER_CLASS
+        message_type = RESOLVE_PROBLEM_REPORT
+        schema_class = PROBLEM_REPORT_HANDLER_SCHEMA

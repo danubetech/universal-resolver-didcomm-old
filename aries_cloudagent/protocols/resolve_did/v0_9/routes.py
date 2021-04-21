@@ -15,8 +15,7 @@ from .messages.resolve_did import ResolveDid
 class ResolveDidSchema(Schema):
     """Request schema for resolving a DID."""
 
-    did = fields.Str(description="DID",
-                     example="did:sov:WRfXPg8dantKVubE3HX8pw")
+    did = fields.Str(description="DID", example="did:sov:WRfXPg8dantKVubE3HX8pw")
 
 
 @docs(tags=["resolvedid"], summary="Resolve a DID via a DID resolver")
@@ -52,6 +51,4 @@ async def connections_resolve_did(request: web.BaseRequest):
 async def register(app: web.Application):
     """Register routes."""
 
-    app.add_routes(
-        [web.post("/connections/{id}/resolve-did", connections_resolve_did)]
-    )
+    app.add_routes([web.post("/connections/{id}/resolve-did", connections_resolve_did)])
