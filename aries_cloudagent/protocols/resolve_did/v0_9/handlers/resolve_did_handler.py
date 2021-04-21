@@ -6,11 +6,11 @@ from .....messaging.base_handler import (
     BaseHandler,
     BaseResponder,
     RequestContext,
-    HandlerException
+    HandlerException,
 )
 
 from ..messages.resolve_did import ResolveDid
-from ..messages.resolve_did_result import ResolveDidResult
+from ..messages.resolve_did_result import ResolveDidResult, ResolveDIDProblemReport
 
 
 class ResolveDidHandler(BaseHandler):
@@ -34,15 +34,21 @@ class ResolveDidHandler(BaseHandler):
             did_document = resolve_did(context.message.did, resolver_url)
         except Exception as err:
             self._logger.error(str(err))
-            msg = (f"Could not resolve DID {context.message.did} using service"
-                   f" {resolver_url}")
-            raise HandlerException(msg)
+            msg = (
+                f"Could not resolve DID {context.message.did} using service"
+                f" {resolver_url}"
+            )
+            reply_msg = ResolveDIDProblemReport(explain_ltxt=msg)
         else:
             reply_msg = ResolveDidResult(did_document=did_document)
-            reply_msg.assign_thread_from(context.message)
-            if "l10n" in context.message._decorators:
-                reply_msg._decorators["l10n"] = context.message._decorators["l10n"]
-            await responder.send_reply(reply_msg)
+
+        reply_msg.assign_thread_from(context.message)
+        if "l10n" in context.message._decorators:
+            reply_msg._decorators["l10n"] = context.message._decorators["l10n"]
+        await responder.send_reply(reply_msg)
+
+        if isinstance(reply_msg, ResolveDIDProblemReport):
+            raise HandlerException(msg)
 
 
 def resolve_did(did, resolver_url):
@@ -54,5 +60,5 @@ def resolve_did(did, resolver_url):
     response = requests.get(url)
     if response.ok:
         content = response.json()
-        return content['didDocument']
+        return content["didDocument"]
     raise HandlerException(f"Failed to resolve DID {did} using URL {url}")
