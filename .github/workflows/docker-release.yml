@@ -71,7 +71,7 @@ jobs:
         run: echo "::set-output name=SHORT_SHA::$(git rev-parse --short HEAD)"
 
       - name: Build image
-        run: docker build . -f ./docker/Dockerfile -t "${{ env.GLOBAL_REPO_NAME }}/${{ env.GLOBAL_IMAGE_NAME }}:${{ env.GLOBAL_TAG }}-${{ steps.short_sha.outputs.SHORT_SHA }}"
+        run: docker build . -f docker/did_resolution_server.Dockerfile -t "${{ env.GLOBAL_REPO_NAME }}/${{ env.GLOBAL_IMAGE_NAME }}:${{ env.GLOBAL_TAG }}-${{ steps.short_sha.outputs.SHORT_SHA }}"
 
       - name: Login user to repo
         run: echo "${{ env.DOCKER_PASSWORD }}" | docker login "${{ env.GLOBAL_REPO_NAME }}" -u "${{ env.DOCKER_USERNAME }}" --password-stdin
