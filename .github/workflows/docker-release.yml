@@ -49,6 +49,7 @@ jobs:
         if: failure()
 
   publish-image:
+    needs: [create-tag]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
